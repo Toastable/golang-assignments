@@ -23,7 +23,11 @@ func main() {
 	fmt.Println("Enter your Last Name")
 	lastName = readFromConsole(*scanner)
 
-	fmt.Printf("You entered %s %s %s", firstName, middleName, lastName)
+	fmt.Printf(GenerateFullNameMessage(firstName, middleName, lastName))
+}
+
+func GenerateFullNameMessage(firstName, middleName, lastName string) string {
+	return fmt.Sprintf("You entered %s %s %s", firstName, middleName, lastName)
 }
 
 func readFromConsole(scanner bufio.Scanner) string {
