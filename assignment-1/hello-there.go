@@ -6,14 +6,14 @@ const (
 	genGrievous = "Grevious"
 	kenobi      = "Obi Wan"
 
-	firstGreeting  = "General Kenobi!"
+	firstGreeting  = "General Kenobi"
 	secondGreeting = "Hello There"
 )
 
 func main() {
-	fmt.Println(GenerateFormattedGreeting())
+	fmt.Println(HelloThere())
 }
 
-func GenerateFormattedGreeting() string {
+func HelloThere() string {
 	return fmt.Sprintf("%s: %s, %s: %s", genGrievous, firstGreeting, kenobi, secondGreeting)
 }
