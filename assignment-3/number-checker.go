@@ -20,14 +20,21 @@ func main() {
 		err := scanner.Err()
 		handleError(err)
 
-		inputNum := convertToNumber(input)
-
-		if inputNum >= 1 && inputNum <= 10 {
-			fmt.Fprintln(os.Stdout, inputNum, "is between 1 and 10")
-		} else {
-			fmt.Fprintln(os.Stdout, inputNum, "is not between 1 and 10")
-		}
+		fmt.Println(GenerateNumberRangeMessage(input))
 	}
+}
+
+func GenerateNumberRangeMessage(input string) string {
+	inputNum := convertToNumber(input)
+	var output string
+
+	if inputNum >= 1 && inputNum <= 10 {
+		output = fmt.Sprintln(inputNum, "is between 1 and 10")
+	} else {
+		output = fmt.Sprintln(inputNum, "is not between 1 and 10")
+	}
+
+	return output
 }
 
 func convertToNumber(input string) int {
