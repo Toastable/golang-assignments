@@ -11,9 +11,9 @@ const (
 )
 
 func main() {
-	fmt.Println(generateFormattedGreeting())
+	fmt.Println(GenerateFormattedGreeting())
 }
 
-func generateFormattedGreeting() string {
+func GenerateFormattedGreeting() string {
 	return fmt.Sprintf("%s: %s, %s: %s", genGrievous, firstGreeting, kenobi, secondGreeting)
 }
