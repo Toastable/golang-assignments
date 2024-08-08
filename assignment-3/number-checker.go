@@ -18,15 +18,28 @@ func main() {
 		input := scanner.Text()
 
 		err := scanner.Err()
-		handleError(err)
 
-		fmt.Println(GenerateNumberRangeMessage(input))
+		if err != nil {
+			log.Println("Invalid input")
+		}
+
+		message, genErr := GenerateNumberRangeMessage(input)
+
+		if genErr != nil {
+			log.Println("Invalid input provided")
+		}
+
+		fmt.Println(message)
 	}
 }
 
-func GenerateNumberRangeMessage(input string) string {
-	inputNum := convertToNumber(input)
+func GenerateNumberRangeMessage(input string) (string, error) {
+	inputNum, err := convertToNumber(input)
 	var output string
+
+	if err != nil {
+		return output, err
+	}
 
 	if inputNum >= 1 && inputNum <= 10 {
 		output = fmt.Sprintln(inputNum, "is between 1 and 10")
@@ -34,18 +47,11 @@ func GenerateNumberRangeMessage(input string) string {
 		output = fmt.Sprintln(inputNum, "is not between 1 and 10")
 	}
 
-	return output
+	return output, nil
 }
 
-func convertToNumber(input string) int {
+func convertToNumber(input string) (int, error) {
 	output, err := strconv.Atoi(input)
-	handleError(err)
 
-	return output
-}
-
-func handleError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
+	return output, err
 }
