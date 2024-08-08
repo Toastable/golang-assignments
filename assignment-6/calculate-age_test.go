@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestSum(t *testing.T) {
+func TestCalculateAge(t *testing.T) {
 	t.Run("returns correct age ", func(t *testing.T) {
 		sut := "01/01/1970"
 		want := 54
