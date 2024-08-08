@@ -23,12 +23,12 @@ func main() {
 }
 
 func displayArrayAsc(numberArray []int) {
-	sortAscending(&numberArray)
+	SortAscending(&numberArray)
 	fmt.Println(numberArray)
 }
 
 func displayArrayDesc(numberArray []int) {
-	sortDescending(&numberArray)
+	SortDescending(&numberArray)
 	fmt.Println(numberArray)
 }
 
@@ -40,15 +40,15 @@ func evenOddArrayCount(numberArray []int) {
 	sortedAscArray := make([]int, len(numberArray))
 	copy(sortedAscArray, numberArray)
 
-	sortAscending(&sortedAscArray)
-	sortDescending(&sortedDescArray)
+	SortAscending(&sortedAscArray)
+	SortDescending(&sortedDescArray)
 
 	fmt.Println("Sorted Ascending:")
-	evenNumbers, oddNumbers = findOddAndEvenNumbers(sortedAscArray)
+	evenNumbers, oddNumbers = FindOddAndEvenNumbers(sortedAscArray)
 	printEvenAndOdd(evenNumbers, oddNumbers)
 
 	fmt.Println("Sorted Descending:")
-	evenNumbers, oddNumbers = findOddAndEvenNumbers(sortedDescArray)
+	evenNumbers, oddNumbers = FindOddAndEvenNumbers(sortedDescArray)
 	printEvenAndOdd(evenNumbers, oddNumbers)
 }
 
@@ -59,15 +59,15 @@ func printEvenAndOdd(evenNumbers []int, oddNumbers []int) {
 	fmt.Println(oddNumbers)
 }
 
-func sortAscending(numberArray *[]int) {
+func SortAscending(numberArray *[]int) {
 	sort.Ints(*numberArray)
 }
 
-func sortDescending(numberArray *[]int) {
+func SortDescending(numberArray *[]int) {
 	sort.Sort(sort.Reverse(sort.IntSlice(*numberArray)))
 }
 
-func findOddAndEvenNumbers(numberArray []int) ([]int, []int) {
+func FindOddAndEvenNumbers(numberArray []int) ([]int, []int) {
 	var evenNumbers, oddNumbers []int
 
 	for _, number := range numberArray {
