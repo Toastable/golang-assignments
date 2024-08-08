@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -40,17 +39,17 @@ func validateLengthOfArray(numbers []int) error {
 	return nil
 }
 
-func Sum(numbers []int, maxDigits int) int {
+func Sum(numbers []int, maxDigits int) (int, error) {
 	validateLengthErrors := validateLengthOfArray(numbers)
 
 	if validateLengthErrors != nil {
-		handleError(validateLengthErrors)
+		return 0, validateLengthErrors
 	}
 
 	digitValidationErrors := validateNumberDigits(numbers, maxDigits)
 
 	if digitValidationErrors != nil {
-		handleError(digitValidationErrors)
+		return 0, digitValidationErrors
 	}
 
 	sum := 0
@@ -59,13 +58,7 @@ func Sum(numbers []int, maxDigits int) int {
 		sum += number
 	}
 
-	return sum
-}
-
-func handleError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
+	return sum, nil
 }
 
 func main() {
@@ -75,16 +68,16 @@ func main() {
 	doubleDigits := [3]int{55, 22, 17}
 	tripleDigits := [3]int{333, 555, 888}
 
-	singleSum = Sum(singleDigits[:], 1)
-	doubleSum = Sum(doubleDigits[:], 2)
-	tripleSum = Sum(tripleDigits[:], 3)
+	singleSum, _ = Sum(singleDigits[:], 1)
+	doubleSum, _ = Sum(doubleDigits[:], 2)
+	tripleSum, _ = Sum(tripleDigits[:], 3)
 
 	fmt.Fprintln(os.Stdout, "Single Digits Sum: ", singleSum)
 	fmt.Fprintln(os.Stdout, "Double Digits Sum: ", doubleSum)
 	fmt.Fprintln(os.Stdout, "Triple Digits Sum: ", tripleSum)
 
 	combinedSums := []int{singleSum, doubleSum, tripleSum}
-	sumOfSums := Sum(combinedSums, -1)
+	sumOfSums, _ := Sum(combinedSums, -1)
 
 	fmt.Fprintln(os.Stdout, "Sum of Sums: ", sumOfSums)
 }
