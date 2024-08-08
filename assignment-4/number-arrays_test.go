@@ -22,7 +22,9 @@ func TestSortAscending(t *testing.T) {
 		SortAscending(&got)
 		assertCorrectMessage(t, got, want)
 	})
+}
 
+func TestSortDescending(t *testing.T) {
 	t.Run("returns array in descending order array when array is already sorted", func(t *testing.T) {
 		want := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 		got := make([]int, len(want))
@@ -39,7 +41,9 @@ func TestSortAscending(t *testing.T) {
 		SortDescending(&got)
 		assertCorrectMessage(t, got, want)
 	})
+}
 
+func TestFindOddAndEvenNumbers(t *testing.T) {
 	t.Run("returns sequentially ordered arrays when array is in ascending order", func(t *testing.T) {
 		wantEvenNumbers := []int{2, 4, 6, 8, 10}
 		wantOddNumbers := []int{1, 3, 5, 7, 9}
