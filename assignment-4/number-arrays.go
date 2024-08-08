@@ -43,15 +43,16 @@ func evenOddArrayCount(numberArray []int) {
 	sortAscending(&sortedAscArray)
 	sortDescending(&sortedDescArray)
 
+	fmt.Println("Sorted Ascending:")
 	evenNumbers, oddNumbers = findOddAndEvenNumbers(sortedAscArray)
 	printEvenAndOdd(evenNumbers, oddNumbers)
 
+	fmt.Println("Sorted Descending:")
 	evenNumbers, oddNumbers = findOddAndEvenNumbers(sortedDescArray)
 	printEvenAndOdd(evenNumbers, oddNumbers)
 }
 
 func printEvenAndOdd(evenNumbers []int, oddNumbers []int) {
-	fmt.Println("Sorted Descending:")
 	fmt.Print("Even: ")
 	fmt.Println(evenNumbers)
 	fmt.Print("Odd: ")
