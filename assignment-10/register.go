@@ -119,14 +119,18 @@ func main() {
 
 func printHeader() {
 	printBar()
-	fmt.Println("| First Name      | Middle Name     | Last Name       | Date of Birth   | Age             |")
+	fmt.Println(titles())
 	printBar()
 }
 
+func titles() string {
+	return fmt.Sprintf("| %-20s | %-20s | %-20s | %-20s | %-20s |", "First Name", "Middle Name", "Last Name", "Date of Birth", "Age")
+}
+
 func printBar() {
-	fmt.Println("|-----------------|-----------------|-----------------|-----------------|-----------------|")
+	fmt.Println("|----------------------|----------------------|----------------------|----------------------|----------------------|")
 }
 
 func (p Pupil) String() string {
-	return fmt.Sprintf("| %-15s | %-15s | %-15s | %-15s | %-15d |", p.fullName.firstName, p.fullName.middleName, p.fullName.lastName, p.dateOfBirth, p.age)
+	return fmt.Sprintf("| %-20s | %-20s | %-20s | %-20s | %-20d |", p.fullName.firstName, p.fullName.middleName, p.fullName.lastName, p.dateOfBirth, p.age)
 }
