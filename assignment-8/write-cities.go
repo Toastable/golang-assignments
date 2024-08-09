@@ -4,29 +4,45 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
+	"strings"
 )
+
+var cityList = [7]string{"Abu Dhabi", "London", "Washington D.C.", "Montevideo", "Vatican City", "Caracas", "Hanoi"}
 
 func main() {
 	const citiesFileName string = "myfavouritecities.txt"
-	var cityList = [7]string{"Abu Dhabi", "London", "Washington D.C.", "Montevideo", "Vatican City", "Caracas", "Hanoi"}
 
 	WriteFileToDisk(cityList[:], citiesFileName)
 
-	OpenFileFromDisk(citiesFileName)
+	fileContents := ReadFileFromDisk(citiesFileName)
+	orderedContents := getOrderedFileContents(fileContents)
+	fmt.Println(orderedContents)
 }
 
-func OpenFileFromDisk(fileName string) {
-	contentBytes, err := os.ReadFile(fileName)
+func getOrderedFileContents(contents string) []string {
+	orderedContents := strings.Split(contents, "\n")
+	sort.Strings(orderedContents)
+	return orderedContents
+}
+
+func ReadFileFromDisk(filePath string) string {
+	contentBytes, err := os.ReadFile(filePath)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	stringContent := string(contentBytes)
-	fmt.Println(stringContent)
+
+	return string(contentBytes)
 }
 
-func WriteFileToDisk(contents []string, fileName string) {
-	file, err := os.Create(fileName)
+func WriteFileToDisk(contents []string, filePath string) {
+
+	if contents == nil {
+		contents = cityList[:]
+	}
+
+	file, err := os.Create(filePath)
 
 	if err != nil {
 		log.Fatal(err)
