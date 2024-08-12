@@ -17,12 +17,15 @@ func main() {
 }
 
 func printTodosToConsole(todos []todo_service.Todo) {
-	fmt.Println("|--------------------------------|--------------------------------|")
-	fmt.Printf("| %-30s | %-30s | \n", "Description", "Is Complete")
+	fmt.Println("|----------------------------------------------------|-------------|")
+	fmt.Printf("| %-50s | %-10s | \n", "Description", "Is Complete")
+	fmt.Println("|----------------------------------------------------|-------------|")
 
 	for _, todo := range todos {
-		fmt.Printf("| %-30s | %-30t | \n", todo.Text, todo.Status)
+		fmt.Printf("| %-50s | %-11t | \n", todo.Text, todo.Status)
 	}
+
+	fmt.Println("|----------------------------------------------------|-------------|")
 }
 
 func populateInMemoryTodos() []todo_service.Todo {
