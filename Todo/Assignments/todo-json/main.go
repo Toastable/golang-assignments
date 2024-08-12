@@ -17,11 +17,11 @@ func main() {
 }
 
 func printTodosToConsole(todos []todo_service.Todo) {
-	fmt.Println("|----------------------|----------------------|")
-	fmt.Printf("| %-20s | %-20s | \n", "Description", "Is Complete")
+	fmt.Println("|--------------------------------|--------------------------------|")
+	fmt.Printf("| %-30s | %-30s | \n", "Description", "Is Complete")
 
 	for _, todo := range todos {
-		fmt.Printf("| %-20s | %-20t | \n", todo.Text, todo.Status)
+		fmt.Printf("| %-30s | %-30t | \n", todo.Text, todo.Status)
 	}
 }
 
