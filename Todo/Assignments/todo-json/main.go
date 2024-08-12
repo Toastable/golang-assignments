@@ -33,7 +33,7 @@ func populateInMemoryTodos() []todo_service.Todo {
 		inMemoryTodoService.Create(todo.Text)
 	}
 
-	return &inMemoryTodoService
+	return todos
 }
 
 func readJsonFileFromDisk(filePath string) []todo_service.Todo {
