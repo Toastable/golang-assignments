@@ -1,9 +1,9 @@
 package todo_service
 
 type Todo struct {
-	ID     string `json:"id"`
-	Status bool   `json:"status"`
-	Text   string `json:"text"`
+	ID     string `json:"ID"`
+	Status bool   `json:"Status"`
+	Text   string `json:"Text"`
 }
 
 type TodoService interface {
