@@ -4,6 +4,7 @@ import (
 	"errors"
 	"sort"
 	"strings"
+	"sync"
 	"todo_service"
 
 	"github.com/google/uuid"
@@ -14,11 +15,14 @@ var errGenerateUuidError = errors.New("could not generate uuid")
 
 type TodoService struct {
 	todos []todo_service.Todo
+	mutex sync.Mutex
 }
 
 func (t *TodoService) Create(text string) error {
-
+	t.mutex.Lock()
 	id, err := uuid.NewV7()
+
+	defer t.mutex.Unlock()
 
 	if err != nil {
 		return errGenerateUuidError
@@ -36,7 +40,10 @@ func (t *TodoService) Create(text string) error {
 }
 
 func (t *TodoService) Get(id string) (todo_service.Todo, error) {
+	t.mutex.Lock()
 	index, err := t.findIndexByID(id)
+
+	defer t.mutex.Unlock()
 
 	if err != nil {
 		return todo_service.Todo{}, err
@@ -46,12 +53,17 @@ func (t *TodoService) Get(id string) (todo_service.Todo, error) {
 }
 
 func (t *TodoService) GetAll() ([]todo_service.Todo, error) {
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
 	return t.todos, nil
 }
 
 func (t *TodoService) Update(id string, text string, status bool) error {
+	t.mutex.Lock()
 
 	index, err := t.findIndexByID(id)
+
+	defer t.mutex.Unlock()
 
 	if err != nil {
 		return err
@@ -64,7 +76,11 @@ func (t *TodoService) Update(id string, text string, status bool) error {
 }
 
 func (t *TodoService) Delete(id string) error {
+	t.mutex.Lock()
+
 	index, err := t.findIndexByID(id)
+
+	defer t.mutex.Unlock()
 
 	if err != nil {
 		return err
@@ -76,9 +92,12 @@ func (t *TodoService) Delete(id string) error {
 }
 
 func (t *TodoService) findIndexByID(id string) (int, error) {
+	t.mutex.Lock()
 	index, found := sort.Find(len(t.todos), func(i int) int {
 		return strings.Compare(id, t.todos[i].ID)
 	})
+
+	defer t.mutex.Unlock()
 
 	if !found {
 		return -1, errGetTodoNotFoundError
