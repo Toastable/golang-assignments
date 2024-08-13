@@ -18,7 +18,7 @@ type TodoService struct {
 	mutex sync.Mutex
 }
 
-func (t *TodoService) Create(text string) error {
+func (t *TodoService) Create(text string, status bool) error {
 	t.mutex.Lock()
 	id, err := uuid.NewV7()
 
@@ -30,7 +30,7 @@ func (t *TodoService) Create(text string) error {
 
 	newTodo := todo_service.Todo{
 		ID:     id.String(),
-		Status: false,
+		Status: status,
 		Text:   text,
 	}
 

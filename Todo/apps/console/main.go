@@ -13,7 +13,6 @@ var initialConfigFilePath = "todos.json"
 
 func main() {
 	todoService := todo_inmemory_service.TodoService{}
-
 	common.PopulateInMemoryTodos(&todoService, initialConfigFilePath)
 
 	inputScanner := bufio.NewScanner(os.Stdin)
@@ -35,8 +34,19 @@ func processCommand(service *todo_inmemory_service.TodoService, inputArguments s
 	switch inputCommand {
 	case "create":
 		handleCreate(service, inputArguments)
+	case "list":
+		handleGet(service)
 	case "exit":
 		handleExit()
+	}
+}
+
+func handleGet(service *todo_inmemory_service.TodoService) {
+	todos, err := service.GetAll()
+	handleError(err)
+
+	for _, todo := range todos {
+		fmt.Println(todo.String())
 	}
 }
 
@@ -48,7 +58,7 @@ func handleCreate(service *todo_inmemory_service.TodoService, inputArgs string) 
 	} else {
 		newTodoText := strings.Join(strings.Split(inputArgs, " ")[1:], " ")
 
-		err := service.Create(newTodoText)
+		err := service.Create(newTodoText, false)
 		handleError(err)
 	}
 }
@@ -58,5 +68,7 @@ func handleExit() {
 }
 
 func handleError(err error) {
-	fmt.Fprintf(os.Stdout, "%v \n", err)
+	if err != nil {
+		fmt.Fprintf(os.Stdout, "%v \n", err)
+	}
 }
