@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"todo_inmemory_service"
+	"todo_service"
 )
 
 var initialConfigFilePath = "todos.json"
@@ -45,9 +46,7 @@ func handleGet(service *todo_inmemory_service.TodoService) {
 	todos, err := service.GetAll()
 	handleError(err)
 
-	for _, todo := range todos {
-		fmt.Println(todo.String())
-	}
+	printTodosToConsole(todos)
 }
 
 func handleCreate(service *todo_inmemory_service.TodoService, inputArgs string) {
@@ -61,6 +60,18 @@ func handleCreate(service *todo_inmemory_service.TodoService, inputArgs string) 
 		err := service.Create(newTodoText, false)
 		handleError(err)
 	}
+}
+
+func printTodosToConsole(todos []todo_service.Todo) {
+	fmt.Println("|--------------------------------------|----------------------------------------------------|-------------|")
+	fmt.Printf("| %-36s | %-50s | %-10s | \n", "ID", "Description", "Is Complete")
+	fmt.Println("|--------------------------------------|----------------------------------------------------|-------------|")
+
+	for _, todo := range todos {
+		fmt.Println(todo.String())
+	}
+
+	fmt.Println("|--------------------------------------|----------------------------------------------------|-------------|")
 }
 
 func handleExit() {

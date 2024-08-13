@@ -19,5 +19,5 @@ type TodoService interface {
 }
 
 func (todo Todo) String() string {
-	return fmt.Sprintf("%s %s %t", todo.ID, todo.Text, todo.Status)
+	return fmt.Sprintf("| %-33s | %-50s | %-11t |", todo.ID, todo.Text, todo.Status)
 }
