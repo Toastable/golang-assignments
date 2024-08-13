@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"todo_inmemory_service"
 	"todo_service"
 )
@@ -12,13 +13,39 @@ import (
 const todoFilePath = "todos.json"
 
 func main() {
+
+	todoChannel := make(chan todo_service.Todo)
+	statusChannel := make(chan bool)
+
+	waitGroup := sync.WaitGroup{}
+	waitGroup.Add(2)
+
 	todos := populateInMemoryTodos()
-	printTodosToConsole(todos)
+
+	go printTextToConsole(&waitGroup, todoChannel, statusChannel, todos)
+	go printStatusToConsole(&waitGroup, todoChannel, statusChannel, todos)
+
+	waitGroup.Wait()
 }
 
-func printTodosToConsole(todos []todo_service.Todo) {
+func printTextToConsole(waitGroup *sync.WaitGroup, todoChannel chan todo_service.Todo, statusChannel chan bool, todos []todo_service.Todo) {
+	defer waitGroup.Done()
+
 	for _, todo := range todos {
-		fmt.Println(todo.Text)
+		fmt.Printf("Task: %s \n", todo.Text)
+
+		todoChannel <- todo
+		<-statusChannel
+	}
+}
+
+func printStatusToConsole(waitGroup *sync.WaitGroup, todoChannel chan todo_service.Todo, statusChannel chan bool, todos []todo_service.Todo) {
+	defer waitGroup.Done()
+
+	for _, todo := range todos {
+		<-todoChannel
+		fmt.Printf("Is Complete: %t \n", todo.Status)
+		statusChannel <- todo.Status
 	}
 }
 
