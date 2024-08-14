@@ -5,6 +5,7 @@ import (
 	"common"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"todo_inmemory_service"
 	"todo_service"
@@ -37,16 +38,63 @@ func processCommand(service *todo_inmemory_service.TodoService, inputArguments s
 		handleCreate(service, inputArguments)
 	case "list":
 		handleGet(service)
+	case "delete":
+		handleDelete(service, inputArguments)
+	case "update":
+		handleUpdate(service, inputArguments)
 	case "exit":
 		handleExit()
 	}
 }
 
+func handleUpdate(service *todo_inmemory_service.TodoService, inputArguments string) {
+	argsArray := strings.Split(inputArguments, " ")
+
+	if len(argsArray) < 3 {
+		fmt.Println("Provide an ID and Status of a task to delete")
+	} else {
+		newStatus, parseError := strconv.ParseBool(argsArray[2])
+
+		if parseError != nil {
+			handleError(parseError)
+		}
+
+		fmt.Println(newStatus)
+
+		err := service.Update(argsArray[1], newStatus)
+
+		if err != nil {
+			handleError(err)
+		} else {
+			fmt.Println("Task successfully updated")
+		}
+	}
+}
+
+func handleDelete(service *todo_inmemory_service.TodoService, inputArguments string) {
+	argsArray := strings.Split(inputArguments, " ")
+
+	if len(argsArray) == 0 {
+		fmt.Println("Provide an ID of a task to delete")
+	} else {
+		err := service.Delete(argsArray[1])
+
+		if err != nil {
+			handleError(err)
+		} else {
+			fmt.Println("Task successfully deleted")
+		}
+	}
+}
+
 func handleGet(service *todo_inmemory_service.TodoService) {
 	todos, err := service.GetAll()
-	handleError(err)
 
-	printTodosToConsole(todos)
+	if err != nil {
+		handleError(err)
+	} else {
+		printTodosToConsole(todos)
+	}
 }
 
 func handleCreate(service *todo_inmemory_service.TodoService, inputArgs string) {
@@ -57,7 +105,12 @@ func handleCreate(service *todo_inmemory_service.TodoService, inputArgs string) 
 	} else {
 		newTodoText := strings.Join(strings.Split(inputArgs, " ")[1:], " ")
 		err := service.Create(newTodoText[:50], false)
-		handleError(err)
+
+		if err != nil {
+			handleError(err)
+		} else {
+			fmt.Println("Task created successfully")
+		}
 	}
 }
 
@@ -78,7 +131,5 @@ func handleExit() {
 }
 
 func handleError(err error) {
-	if err != nil {
-		fmt.Fprintf(os.Stdout, "%v \n", err)
-	}
+	fmt.Fprintf(os.Stdout, "%v \n", err)
 }

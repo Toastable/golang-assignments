@@ -58,18 +58,16 @@ func (t *TodoService) GetAll() ([]todo_service.Todo, error) {
 	return t.todos, nil
 }
 
-func (t *TodoService) Update(id string, text string, status bool) error {
+func (t *TodoService) Update(id string, status bool) error {
 	t.mutex.Lock()
+	defer t.mutex.Unlock()
 
 	index, err := t.findIndexByID(id)
-
-	defer t.mutex.Unlock()
 
 	if err != nil {
 		return err
 	}
 
-	t.todos[index].Text = text
 	t.todos[index].Status = status
 
 	return nil
@@ -77,10 +75,8 @@ func (t *TodoService) Update(id string, text string, status bool) error {
 
 func (t *TodoService) Delete(id string) error {
 	t.mutex.Lock()
-
-	index, err := t.findIndexByID(id)
-
 	defer t.mutex.Unlock()
+	index, err := t.findIndexByID(id)
 
 	if err != nil {
 		return err
@@ -92,12 +88,10 @@ func (t *TodoService) Delete(id string) error {
 }
 
 func (t *TodoService) findIndexByID(id string) (int, error) {
-	t.mutex.Lock()
+
 	index, found := sort.Find(len(t.todos), func(i int) int {
 		return strings.Compare(id, t.todos[i].ID)
 	})
-
-	defer t.mutex.Unlock()
 
 	if !found {
 		return -1, errGetTodoNotFoundError
