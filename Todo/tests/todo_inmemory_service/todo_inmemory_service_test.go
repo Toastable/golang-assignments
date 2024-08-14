@@ -16,7 +16,7 @@ func TestCreate(t *testing.T) {
 			Text:   "This is a test",
 		})
 
-		err := service.Create("This is a test", true)
+		err := service.Create("This is also a test", true)
 
 		if err != nil {
 			t.Fatalf("Expected no errors to occur but one happened anyway: %v", err)
@@ -27,8 +27,8 @@ func TestCreate(t *testing.T) {
 		assertAreEqual(t, len(got), len(want))
 		sut := got[0]
 
-		assertAreEqual(t, sut.Text, sut.Text)
-		assertAreEqual(t, sut.Status, sut.Status)
+		assertAreEqual(t, sut.Text, "This is also a test")
+		assertAreEqual(t, sut.Status, true)
 	})
 }
 
@@ -79,12 +79,12 @@ func TestGetAll(t *testing.T) {
 		assertAreEqual(t, len(got), len(want))
 
 		sut := got[0]
-		assertAreEqual(t, sut.Text, sut.Text)
-		assertAreEqual(t, sut.Status, sut.Status)
+		assertAreEqual(t, sut.Text, want[0].Text)
+		assertAreEqual(t, sut.Status, want[0].Status)
 
 		sut = got[1]
-		assertAreEqual(t, sut.Text, sut.Text)
-		assertAreEqual(t, sut.Status, sut.Status)
+		assertAreEqual(t, sut.Text, want[1].Text)
+		assertAreEqual(t, sut.Status, want[1].Status)
 	})
 }
 
@@ -103,8 +103,7 @@ func TestUpdate(t *testing.T) {
 
 		got, _ := service.GetAll()
 		sut := got[0]
-		assertAreEqual(t, sut.Text, sut.Text)
-		assertAreEqual(t, sut.Status, sut.Status)
+		assertAreEqual(t, sut.Status, false)
 	})
 }
 

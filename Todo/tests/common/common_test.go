@@ -14,7 +14,7 @@ func TestPopulateInMemoryTodos(t *testing.T) {
 
 		inMemService := todo_inmemory_service.TodoService{}
 
-		want := make([]todo_service.Todo, 2)
+		want := make([]todo_service.Todo, 0)
 		want = append(want, todo_service.Todo{
 			ID:     "c3e6f7d0-8b5a-4e8d-9c5b-3a2b1e0f4a7d",
 			Status: false,
@@ -29,12 +29,12 @@ func TestPopulateInMemoryTodos(t *testing.T) {
 		got := common.PopulateInMemoryTodos(&inMemService, testFilePath)
 
 		sut := got[0]
-		assertAreEqual(t, sut.Text, sut.Text)
-		assertAreEqual(t, sut.Status, sut.Status)
+		assertAreEqual(t, sut.Text, want[0].Text)
+		assertAreEqual(t, sut.Status, want[0].Status)
 
 		sut = got[1]
-		assertAreEqual(t, sut.Text, sut.Text)
-		assertAreEqual(t, sut.Status, sut.Status)
+		assertAreEqual(t, sut.Text, want[1].Text)
+		assertAreEqual(t, sut.Status, want[1].Status)
 	})
 }
 
