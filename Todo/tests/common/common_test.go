@@ -2,7 +2,6 @@ package main
 
 import (
 	"common"
-	"reflect"
 	"testing"
 	"todo_inmemory_service"
 	"todo_service"
@@ -29,14 +28,20 @@ func TestPopulateInMemoryTodos(t *testing.T) {
 
 		got := common.PopulateInMemoryTodos(&inMemService, testFilePath)
 
-		assertCorrectMessage(t, got, want)
+		sut := got[0]
+		assertAreEqual(t, sut.Text, sut.Text)
+		assertAreEqual(t, sut.Status, sut.Status)
+
+		sut = got[1]
+		assertAreEqual(t, sut.Text, sut.Text)
+		assertAreEqual(t, sut.Status, sut.Status)
 	})
 }
 
-func assertCorrectMessage(t testing.TB, got, want []todo_service.Todo) {
+func assertAreEqual[T comparable](t testing.TB, got, want T) {
 	t.Helper()
 
-	if reflect.DeepEqual(got, want) {
-		t.Errorf("got %q want %q", got, want)
+	if got != want {
+		t.Errorf(`got %v want %v`, got, want)
 	}
 }
