@@ -56,8 +56,7 @@ func handleCreate(service *todo_inmemory_service.TodoService, inputArgs string) 
 		fmt.Println("Provide a description of your task")
 	} else {
 		newTodoText := strings.Join(strings.Split(inputArgs, " ")[1:], " ")
-
-		err := service.Create(newTodoText, false)
+		err := service.Create(newTodoText[:50], false)
 		handleError(err)
 	}
 }
