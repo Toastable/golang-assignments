@@ -42,9 +42,20 @@ func processCommand(service *todo_inmemory_service.TodoService, inputArguments s
 		handleDelete(service, inputArguments)
 	case "update":
 		handleUpdate(service, inputArguments)
+	case "help":
+		handleHelp()
 	case "exit":
 		handleExit()
 	}
+}
+
+func handleHelp() {
+	fmt.Println("The following commands are available: ")
+	fmt.Println("create: accepts a task text and creates a new task using it")
+	fmt.Println("list : returns a list of all currently held tasks, their IDs and their Status")
+	fmt.Println("delete : accepts an ID and deletes the associated task it if it exists")
+	fmt.Println("update : accepts an ID and a Status and updates the task if it exists")
+	fmt.Println("exit : shuts down the programme")
 }
 
 func handleUpdate(service *todo_inmemory_service.TodoService, inputArguments string) {
