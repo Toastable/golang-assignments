@@ -2,7 +2,7 @@ module todo_inmemory_service
 
 go 1.22.5
 
-replace todo_service => ../todo_service
+replace todo_service => /../todo_service
 
 require (
 	github.com/google/uuid v1.6.0
