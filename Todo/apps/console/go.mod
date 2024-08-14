@@ -6,7 +6,7 @@ replace todo_service => /../../modules/todo_service
 
 replace todo_inmemory_service => ../../modules/todo_inmemory_service
 
-replace common => /../../common
+replace common => /../../modules/common
 
 require (
 	common v0.0.0-00010101000000-000000000000
