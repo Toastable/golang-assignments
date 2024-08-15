@@ -1,6 +1,6 @@
 module todo_inmemory_service
 
-go 1.22.5
+go 1.22.6
 
 replace todo_service => /../todo_service
 
