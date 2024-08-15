@@ -9,9 +9,44 @@ import (
 
 const defaultTimeout = 30
 
-type RequestBody struct {
+type PostRequestBody struct {
 	Text   string
 	Status bool
+}
+
+type PatchRequestBody struct {
+	ID     string
+	Text   string
+	Status bool
+}
+
+func UpdateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc {
+	return func(wr http.ResponseWriter, req *http.Request) {
+		context, cancelContext := context.WithTimeout(req.Context(), defaultTimeout)
+		defer cancelContext()
+
+		okChannel := make(chan []byte)
+		errorChannel := make(chan int)
+
+		requestBody := unmarshalRequestBody[PatchRequestBody](wr, req)
+
+		var encodedJson []byte
+		var errorResponseCode int
+
+		//TODO: Sort out updating of description both here and in CLI app
+		service.Update(requestBody.ID, requestBody.Status)
+
+		select {
+		case <-context.Done():
+			cancelContext()
+			wr.WriteHeader(http.StatusRequestTimeout)
+		case encodedJson = <-okChannel:
+			wr.WriteHeader(http.StatusOK)
+			wr.Write(encodedJson)
+		case errorResponseCode = <-errorChannel:
+			wr.WriteHeader(errorResponseCode)
+		}
+	}
 }
 
 func CreateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc {
@@ -22,7 +57,7 @@ func CreateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 		okChannel := make(chan []byte)
 		errorChannel := make(chan int)
 
-		requestBody := unmarshalRequestBody(wr, req)
+		requestBody := unmarshalRequestBody[PostRequestBody](wr, req)
 
 		go createTodo(requestBody, service, &okChannel, &errorChannel)
 
@@ -69,8 +104,8 @@ func GetAllHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 	}
 }
 
-func unmarshalRequestBody(wr http.ResponseWriter, req *http.Request) RequestBody {
-	var requestBody RequestBody
+func unmarshalRequestBody[T comparable](wr http.ResponseWriter, req *http.Request) T {
+	var requestBody T
 	err := json.NewDecoder(req.Body).Decode(&requestBody)
 
 	if err != nil {
@@ -80,7 +115,7 @@ func unmarshalRequestBody(wr http.ResponseWriter, req *http.Request) RequestBody
 	return requestBody
 }
 
-func createTodo(body RequestBody, service *todo_inmemory_service.TodoService, okChan *chan []byte, errorChan *chan int) {
+func createTodo(body PostRequestBody, service *todo_inmemory_service.TodoService, okChan *chan []byte, errorChan *chan int) {
 	defer close(*okChan)
 	defer close(*errorChan)
 
