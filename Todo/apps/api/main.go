@@ -23,4 +23,5 @@ func main() {
 
 func setupRouting(httpServer *http.ServeMux, service *todo_inmemory_service.TodoService) {
 	httpServer.Handle("GET /api/todo/", http.HandlerFunc(server.GetAllHandler(service)))
+	httpServer.Handle("POST /api/todo/", http.HandlerFunc(server.CreateHandler(service)))
 }
