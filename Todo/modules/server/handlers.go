@@ -42,6 +42,7 @@ func UpdateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 			wr.WriteHeader(http.StatusRequestTimeout)
 		case encodedJson = <-okChannel:
 			wr.WriteHeader(http.StatusOK)
+			wr.Header().Set("Content-Type", "application/json")
 			wr.Write(encodedJson)
 		case errorResponseCode = <-errorChannel:
 			wr.WriteHeader(errorResponseCode)
@@ -70,6 +71,7 @@ func CreateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 			wr.WriteHeader(http.StatusRequestTimeout)
 		case encodedJson = <-okChannel:
 			wr.WriteHeader(http.StatusOK)
+			wr.Header().Set("Content-Type", "application/json")
 			wr.Write(encodedJson)
 		case errorResponseCode = <-errorChannel:
 			wr.WriteHeader(errorResponseCode)
@@ -97,6 +99,7 @@ func GetAllHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 			wr.WriteHeader(http.StatusRequestTimeout)
 		case encodedJson = <-okChannel:
 			wr.WriteHeader(http.StatusOK)
+			wr.Header().Set("Content-Type", "application/json")
 			wr.Write(encodedJson)
 		case errorResponseCode = <-errorChannel:
 			wr.WriteHeader(errorResponseCode)
