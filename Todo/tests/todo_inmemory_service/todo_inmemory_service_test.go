@@ -16,7 +16,7 @@ func TestCreate(t *testing.T) {
 			Text:   "This is a test",
 		})
 
-		err := service.Create("This is also a test", true)
+		_, err := service.Create("This is also a test", true)
 
 		if err != nil {
 			t.Fatalf("Expected no errors to occur but one happened anyway: %v", err)

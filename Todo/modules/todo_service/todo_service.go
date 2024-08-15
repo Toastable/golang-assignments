@@ -11,7 +11,7 @@ type Todo struct {
 }
 
 type TodoService interface {
-	Create(text string, status bool) error
+	Create(text string, status bool) (string, error)
 	Get(id string) (Todo, error)
 	GetAll() ([]Todo, error)
 	Update(id string, text string, status bool) error

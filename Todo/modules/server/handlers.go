@@ -81,18 +81,22 @@ func unmarshalRequestBody(wr http.ResponseWriter, req *http.Request) RequestBody
 }
 
 func createTodo(body RequestBody, service *todo_inmemory_service.TodoService, okChan *chan []byte, errorChan *chan int) {
-	err := service.Create(body.Text, body.Status)
-
 	defer close(*okChan)
 	defer close(*errorChan)
+
+	if body.Text == "" {
+		*errorChan <- http.StatusInternalServerError
+		return
+	}
+
+	id, err := service.Create(body.Text, body.Status)
 
 	if err != nil {
 		*errorChan <- http.StatusInternalServerError
 		return
 	}
 
-	//TODO: have the service create function return the new ID
-	encodedResponse, err := json.Marshal("success")
+	encodedResponse, err := json.Marshal(id)
 
 	if err != nil {
 		*errorChan <- http.StatusInternalServerError
