@@ -1,6 +1,7 @@
 package main
 
 import (
+	"common"
 	"net/http"
 	"server"
 	"todo_inmemory_service"
@@ -8,9 +9,12 @@ import (
 
 const address = ":3000"
 
+var initialConfigFilePath = "todos.json"
+
 func main() {
 	httpServer := http.NewServeMux()
 	todoService := todo_inmemory_service.TodoService{}
+	common.PopulateInMemoryTodos(&todoService, initialConfigFilePath)
 
 	setupRouting(httpServer, &todoService)
 
