@@ -20,6 +20,29 @@ type PatchRequestBody struct {
 	Status bool
 }
 
+func DeleteHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc {
+	return func(wr http.ResponseWriter, req *http.Request) {
+		context, cancelContext := context.WithTimeout(req.Context(), defaultTimeout)
+		defer cancelContext()
+
+		responseChannel := make(chan int)
+
+		id := req.PathValue("id")
+
+		var responseCode int
+
+		go deleteTodo(id, service, &responseChannel)
+
+		select {
+		case <-context.Done():
+			cancelContext()
+			wr.WriteHeader(http.StatusRequestTimeout)
+		case responseCode = <-responseChannel:
+			wr.WriteHeader(responseCode)
+		}
+	}
+}
+
 func UpdateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc {
 	return func(wr http.ResponseWriter, req *http.Request) {
 		context, cancelContext := context.WithTimeout(req.Context(), defaultTimeout)
@@ -115,6 +138,18 @@ func unmarshalRequestBody[T comparable](wr http.ResponseWriter, req *http.Reques
 	}
 
 	return requestBody
+}
+
+func deleteTodo(id string, service *todo_inmemory_service.TodoService, responseChan *chan int) {
+	defer close(*responseChan)
+
+	err := service.Delete(id)
+
+	if err != nil {
+		*responseChan <- http.StatusNotFound
+	}
+
+	*responseChan <- http.StatusOK
 }
 
 func updateTodo(body PatchRequestBody, service *todo_inmemory_service.TodoService, okChan *chan []byte, errorChan *chan int) {

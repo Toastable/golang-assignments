@@ -25,4 +25,5 @@ func setupRouting(httpServer *http.ServeMux, service *todo_inmemory_service.Todo
 	httpServer.Handle("GET /api/todo/", http.HandlerFunc(server.GetAllHandler(service)))
 	httpServer.Handle("POST /api/todo/", http.HandlerFunc(server.CreateHandler(service)))
 	httpServer.Handle("PATCH /api/todo/", http.HandlerFunc(server.UpdateHandler(service)))
+	httpServer.Handle("DELETE /api/todo/{id}", http.HandlerFunc(server.DeleteHandler(service)))
 }
