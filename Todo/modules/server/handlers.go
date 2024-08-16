@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"todo_inmemory_service"
 )
@@ -33,7 +34,7 @@ func UpdateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 		var encodedJson []byte
 		var errorResponseCode int
 
-		service.Update(requestBody.ID, requestBody.Text, requestBody.Status)
+		go updateTodo(requestBody, service, &okChannel, &errorChannel)
 
 		select {
 		case <-context.Done():
@@ -115,6 +116,27 @@ func unmarshalRequestBody[T comparable](wr http.ResponseWriter, req *http.Reques
 	}
 
 	return requestBody
+}
+
+func updateTodo(body PatchRequestBody, service *todo_inmemory_service.TodoService, okChan *chan []byte, errorChan *chan int) {
+	defer close(*okChan)
+	defer close(*errorChan)
+
+	id, err := service.Update(body.ID, body.Text, body.Status)
+
+	if err != nil {
+		*errorChan <- http.StatusInternalServerError
+		return
+	}
+
+	encodedResponse, err := json.Marshal(id)
+
+	fmt.Println(err)
+	if err != nil {
+		*errorChan <- http.StatusInternalServerError
+	}
+
+	*okChan <- encodedResponse
 }
 
 func createTodo(body PostRequestBody, service *todo_inmemory_service.TodoService, okChan *chan []byte, errorChan *chan int) {

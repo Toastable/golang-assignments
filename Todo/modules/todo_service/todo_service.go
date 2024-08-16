@@ -13,7 +13,7 @@ type Todo struct {
 type TodoService interface {
 	Create(text string, status bool) (string, error)
 	GetAll() ([]Todo, error)
-	Update(id string, text string, status bool) error
+	Update(id string, text string, status bool) (string, error)
 	Delete(id string) error
 }
 

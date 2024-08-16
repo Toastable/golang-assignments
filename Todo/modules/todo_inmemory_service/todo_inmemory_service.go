@@ -45,14 +45,14 @@ func (t *TodoService) GetAll() ([]todo_service.Todo, error) {
 	return t.todos, nil
 }
 
-func (t *TodoService) Update(id string, text string, status bool) error {
+func (t *TodoService) Update(id string, text string, status bool) (string, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
 	index, err := t.findIndexByID(id)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if len(text) > 0 {
@@ -61,7 +61,7 @@ func (t *TodoService) Update(id string, text string, status bool) error {
 
 	t.todos[index].Status = status
 
-	return nil
+	return id, nil
 }
 
 func (t *TodoService) Delete(id string) error {
