@@ -3,12 +3,11 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"todo_inmemory_service"
 )
 
-const defaultTimeout = 30
+const defaultTimeout = 60
 
 type PostRequestBody struct {
 	Text   string
@@ -131,7 +130,6 @@ func updateTodo(body PatchRequestBody, service *todo_inmemory_service.TodoServic
 
 	encodedResponse, err := json.Marshal(id)
 
-	fmt.Println(err)
 	if err != nil {
 		*errorChan <- http.StatusInternalServerError
 	}
