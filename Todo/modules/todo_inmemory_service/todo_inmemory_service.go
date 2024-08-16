@@ -45,7 +45,7 @@ func (t *TodoService) GetAll() ([]todo_service.Todo, error) {
 	return t.todos, nil
 }
 
-func (t *TodoService) Update(id string, status bool) error {
+func (t *TodoService) Update(id string, text string, status bool) error {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -53,6 +53,10 @@ func (t *TodoService) Update(id string, status bool) error {
 
 	if err != nil {
 		return err
+	}
+
+	if len(text) > 0 {
+		t.todos[index].Text = text
 	}
 
 	t.todos[index].Status = status

@@ -33,8 +33,7 @@ func UpdateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 		var encodedJson []byte
 		var errorResponseCode int
 
-		//TODO: Sort out updating of description both here and in CLI app
-		service.Update(requestBody.ID, requestBody.Status)
+		service.Update(requestBody.ID, requestBody.Text, requestBody.Status)
 
 		select {
 		case <-context.Done():
