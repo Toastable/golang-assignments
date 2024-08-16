@@ -70,8 +70,6 @@ func handleUpdate(service *todo_inmemory_service.TodoService, inputArguments str
 			handleError(parseError)
 		}
 
-		fmt.Println(newStatus)
-
 		err := service.Update(argsArray[1], "", newStatus)
 
 		if err != nil {
