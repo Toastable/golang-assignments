@@ -95,7 +95,7 @@ func TestUpdate(t *testing.T) {
 
 		todos, _ := service.GetAll()
 
-		err := service.Update(todos[0].ID, false)
+		_, err := service.Update(todos[0].ID, "", false)
 
 		if err != nil {
 			t.Fatalf("Expected no errors to occur but one happened anyway: %v", err)
