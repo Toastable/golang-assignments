@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"strings"
 	"todo_service"
 )
 
@@ -98,8 +99,6 @@ func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
 			Status: false,
 		}
 
-		fmt.Println(postData)
-
 		jsonData, err := json.Marshal(postData)
 		if err != nil {
 			fmt.Println(err)
@@ -142,9 +141,37 @@ func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {
-	//Do delete stuff
+	okChannel := make(chan string)
+	errorChannel := make(chan int)
 
-	http.Redirect(wr, req, homeAddress, http.StatusOK)
+	go func() {
+		defer close(okChannel)
+		defer close(errorChannel)
+
+		id := strings.TrimPrefix(req.URL.Path, "/delete/")
+
+		fmt.Println(id)
+
+		deleteAddress := fmt.Sprintf("%s/%s", apiBaseAddress, id)
+		deleteRequest, deleteErr := http.NewRequest(http.MethodDelete, deleteAddress, nil)
+
+		client := &http.Client{}
+		_, deleteRequestError := client.Do(deleteRequest)
+
+		if deleteRequestError != nil {
+			fmt.Println(deleteErr)
+			errorChannel <- http.StatusInternalServerError
+			return
+		}
+		okChannel <- ""
+	}()
+
+	select {
+	case <-okChannel:
+		http.Redirect(wr, req, homeAddress, http.StatusFound)
+	case <-errorChannel:
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+	}
 }
 
 func CheckServerStatusHandler(wr http.ResponseWriter, req *http.Request) {
