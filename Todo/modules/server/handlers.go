@@ -3,11 +3,12 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"todo_inmemory_service"
 )
 
-const defaultTimeout = 60
+const defaultTimeout = 90
 
 type PostRequestBody struct {
 	Text   string
@@ -79,8 +80,8 @@ func CreateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 
 		okChannel := make(chan []byte)
 		errorChannel := make(chan int)
-
 		requestBody := unmarshalRequestBody[PostRequestBody](wr, req)
+		fmt.Println(requestBody)
 
 		go createTodo(requestBody, service, &okChannel, &errorChannel)
 

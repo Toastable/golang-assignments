@@ -1,6 +1,7 @@
 package web_server
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -19,6 +20,10 @@ type homepageViewModel struct {
 	Todos []todo_service.Todo
 }
 
+type PostRequestBody struct {
+	Text   string 
+	Status bool
+}
 
 func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 	viewModel := homepageViewModel{
@@ -73,13 +78,57 @@ func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func NewTodoHandler(wr http.ResponseWriter, req *http.Request) {
-	viewModel := homepageViewModel{
-		Todos: make([]todo_service.Todo, 0),
+
+	editTemplate := template.Must(template.ParseFiles("templates/new.html"))
+
+	editTemplate.Execute(wr, nil)
+}
+
+func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
+
+	okChannel := make(chan string)
+	errorChannel := make(chan int)
+
+	go func() {
+		defer close(okChannel)
+		defer close(errorChannel)
+
+		postData := PostRequestBody {
+			Text: req.FormValue("todo-text"),
+			Status: false,
+		}
+
+		fmt.Println(postData)
+
+		jsonData, err := json.Marshal(postData)
+		if err != nil {
+			fmt.Println(err)
+			errorChannel <- http.StatusInternalServerError
+			return
+		}
+
+		resp, getError := http.Post(apiBaseAddress, 
+			"application/json",
+			bytes.NewBuffer(jsonData),
+		)
+
+		if getError != nil {
+			fmt.Println(getError)
+			errorChannel <- http.StatusInternalServerError
+			return
+		}
+
+		defer resp.Body.Close()
+
+		okChannel <- ""
+	}()
+
+	select {
+	case <-okChannel:
+		http.Redirect(wr, req, homeAddress, http.StatusFound)
+	case <-errorChannel:
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
 	}
-
-	newTemplate := template.Must(template.ParseFiles("templates/new.html"))
-
-	newTemplate.Execute(wr, viewModel)
 }
 
 func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
