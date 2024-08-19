@@ -13,6 +13,7 @@ func main() {
 	httpServer.HandleFunc("/new", web_server.NewTodoHandler)
 	httpServer.HandleFunc("/edit", web_server.EditTodoHandler)
 	httpServer.HandleFunc("/server-status", web_server.CheckServerStatusHandler)
+	httpServer.HandleFunc("/error", web_server.ErrorHandler)
 
 	http.ListenAndServe(address, httpServer)
 }

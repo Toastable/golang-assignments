@@ -1,12 +1,18 @@
 package web_server
 
 import (
+	"encoding/json"
+	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 	"todo_service"
 )
 
-const defaultTimeout = 60
+const (
+	apiBaseAddress = "http://localhost:3000/api/todo"
+	errorAddress = "http://localhost:3001/error"
+)
 
 type homepageViewModel struct {
 	Todos []todo_service.Todo
@@ -18,10 +24,51 @@ func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 		Todos: make([]todo_service.Todo, 0),
 	}
 
-	homepageTemplate := template.Must(template.ParseFiles("templates/homepage.html"))
+	okChannel := make(chan []todo_service.Todo)
+	errorChannel := make(chan int)
 
-	homepageTemplate.Execute(wr, viewModel)
+	go func() {
+		defer close(okChannel)
+		defer close(errorChannel)
 
+		resp, getError := http.Get(apiBaseAddress)
+
+		if getError != nil {
+			fmt.Println(getError)
+			errorChannel <- http.StatusInternalServerError
+			return
+		}
+
+		defer resp.Body.Close()
+
+		responseBody, ioErr := io.ReadAll(resp.Body)
+
+		if ioErr != nil {
+			errorChannel <- http.StatusInternalServerError
+			return
+		}
+
+		todos := make([]todo_service.Todo, 0)
+		jsonErr := json.Unmarshal(responseBody, &todos)
+
+		if jsonErr != nil {
+			errorChannel <- http.StatusInternalServerError
+			return
+		}
+
+		okChannel <- todos
+	}()
+	
+	var todos []todo_service.Todo
+
+	select {
+	case todos = <-okChannel:
+		viewModel.Todos = todos
+		homepageTemplate := template.Must(template.ParseFiles("templates/homepage.html"))
+		homepageTemplate.Execute(wr, viewModel)
+	case <-errorChannel:
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+	}
 }
 
 func NewTodoHandler(wr http.ResponseWriter, req *http.Request) {
@@ -49,7 +96,17 @@ func CheckServerStatusHandler(wr http.ResponseWriter, req *http.Request) {
 		Todos: make([]todo_service.Todo, 0),
 	}
 
-	editTemplate := template.Must(template.ParseFiles("templates/status.html"))
+	statusTemplate := template.Must(template.ParseFiles("templates/status.html"))
+
+	statusTemplate.Execute(wr, viewModel)
+}
+
+func ErrorHandler(wr http.ResponseWriter, req *http.Request) {
+	viewModel := homepageViewModel{
+		Todos: make([]todo_service.Todo, 0),
+	}
+
+	editTemplate := template.Must(template.ParseFiles("templates/error.html"))
 
 	editTemplate.Execute(wr, viewModel)
 }
