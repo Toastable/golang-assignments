@@ -1,18 +1,119 @@
-<div>
-    <div class="header">
-        <h2>Add a Todo/h2>
-    </div>
-    <div class="todo-container">
-        <form action="/new" method="post">
-            <div>
-                <input type="text" name="todo-text" />
-            </div>
+<head>
+    <!-- See readme for explanation for internal stylesheets -->
+    <style>
+        body {
+            background-color: #16213d;
+        }
 
-            <div>
-                <input type="submit">
-            </div>
-        </form>
+        a {
+            color: hsl(221.9, 53.5%, 80.6%);
+            font-weight: bold;
+        }
 
-        <a href="/">Go Back</a>
-    </div>
-</div>
+        main {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+
+            color: hsl(221.9, 53.5%, 80.6%);
+        }
+
+        .contents {
+            border-radius: 10px;
+            background-color: #1e293b;
+            border-color: #5d6c84;
+            border-style: solid;
+            border-width: 1px;
+
+            display: flex;
+            flex-flow: wrap;
+            margin: 1rem;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 90%;
+            min-width: 600px;
+        }
+
+        .header {
+            color: hsl(221.9, 53.5%, 80.6%);
+            border-bottom-style: solid;
+            border-bottom-color: hsl(228, 5.9%, 49.6%);
+            border-bottom-width: 1px;
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            font-size: larger;
+
+            h2 {
+                font-weight: bold;
+                font-size: larger;             
+            }
+        }
+
+        .add-container {
+            flex: content;
+            flex-flow: row;
+            flex-wrap: nowrap;
+            display: flex;
+            flex-wrap: wrap;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            justify-content: center;
+        }
+
+        .todo-container {
+            padding: 1rem;
+            flex: content;
+            margin: 1rem;
+            display: flex;
+            flex-flow: wrap;
+            justify-content: center;
+            flex-direction: column;
+            min-width: 10rem;
+            border-bottom-style: solid;
+            border-bottom-color: hsl(228, 5.9%, 49.6%);
+            border-bottom-width: 1px;
+            padding-bottom: 0.5rem;
+        }
+
+        .new-todo-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .new-todo {
+            padding: 0.5rem;
+        }
+
+        .todo-submit {
+            width: 20%;
+        }
+
+    </style>
+    <title>Todo Application</title>
+</head>
+
+<body>
+    <main>
+        <div class="contents">
+            <div class="header">
+                <h2>Add a Todo </h2>
+            </div>
+            <div class="todo-container">
+                <form class="new-todo-form" action="/new" method="post">
+                    <div class="new-todo">
+                        <label name="todo-text">Todo Description: </label>
+                        <input type="text" name="todo-text" />
+                    </div>
+                    <div class="todo-submit">
+                        <input type="submit">
+                    </div>
+                </form>
+        
+                <a href="/">Go Back</a>
+            </div>
+        </div>
+    </main>
+</body>
