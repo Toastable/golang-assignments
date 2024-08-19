@@ -1,22 +1,28 @@
-<div>
-    <div class="header">
-        <h2>List of things to do</h2>
-    </div>
-    <div class="todo-container">
-        {{range .Todos}}
-        <div class="todo-item">
-            <div>
-                {{.Text}}
-            </div>
-            <div class="editContainer">
-                <a href="/edit">Edit</a>
-            </div>
-            <div class="deleteContainer">
-                <a href="/delete">Delete</a>
-            </div>
+<head>
+    <link rel="stylesheet" href="/Todo/static/styles.css"></link>
+    <title>Todo Application</title>
+</head>
+<body>
+    <main>
+        <div class="header">
+            <h2>List of things to do</h2>
         </div>
-        {{end}}
-
-        <a href="/new">Add Todo</a>
-    </div>
-</div>
+        <div class="todo-container">
+            {{range .Todos}}
+            <div class="todo-item">
+                <div>
+                    {{.Text}}
+                </div>
+                <div class="editContainer">
+                    <a href="/edit">Edit</a>
+                </div>
+                <div class="deleteContainer">
+                    <a href="/delete">Delete</a>
+                </div>
+            </div>
+            {{end}}
+    
+            <a href="/new">Add Todo</a>
+        </div>
+    </main>
+</body>
