@@ -12,6 +12,7 @@ import (
 const (
 	apiBaseAddress = "http://localhost:3000/api/todo"
 	errorAddress = "http://localhost:3001/error"
+	homeAddress = "http://localhost:3001"
 )
 
 type homepageViewModel struct {
@@ -89,6 +90,12 @@ func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
 	editTemplate := template.Must(template.ParseFiles("templates/edit.html"))
 
 	editTemplate.Execute(wr, viewModel)
+}
+
+func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {
+	//Do delete stuff
+
+	http.Redirect(wr, req, homeAddress, http.StatusOK)
 }
 
 func CheckServerStatusHandler(wr http.ResponseWriter, req *http.Request) {

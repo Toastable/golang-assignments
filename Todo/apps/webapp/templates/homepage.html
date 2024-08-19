@@ -1,1 +1,22 @@
-<h1>Hello World from the homepage</h1>
+<div>
+    <div class="header">
+        <h2>List of things to do</h2>
+    </div>
+    <div class="todo-container">
+        {{range .Todos}}
+        <div class="todo-item">
+            <div>
+                {{.Text}}
+            </div>
+            <div class="editContainer">
+                <a href="/edit">Edit</a>
+            </div>
+            <div class="deleteContainer">
+                <a href="/delete">Delete</a>
+            </div>
+        </div>
+        {{end}}
+
+        <a href="/new">Add Todo</a>
+    </div>
+</div>
