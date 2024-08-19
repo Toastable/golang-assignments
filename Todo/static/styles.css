@@ -1,5 +1,10 @@
 body {
-    background-color: #0e1526;
+    background-color: #16213d;
+}
+
+a {
+    color: hsl(221.9, 53.5%, 80.6%);
+    font-weight: bold;
 }
 
 main {
@@ -9,4 +14,75 @@ main {
     align-items: center;
 
     color: hsl(221.9, 53.5%, 80.6%);
+}
+
+.contents {
+    border-radius: 10px;
+    background-color: #1e293b;
+    border-color: #5d6c84;
+    border-style: solid;
+    border-width: 1px;
+
+    display: flex;
+    flex-flow: wrap;
+    margin: 1rem;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 90%;
+    min-width: 600px;
+}
+
+.header {
+    color: hsl(221.9, 53.5%, 80.6%);
+    border-bottom-style: solid;
+    border-bottom-color: hsl(228, 5.9%, 49.6%);
+    border-bottom-width: 1px;
+    padding-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    font-size: larger;
+
+    h2 {
+        font-weight: bold;
+        font-size: larger;             
+    }
+}
+
+.add-container {
+    flex: content;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    justify-content: center;
+}
+
+.todo-container {
+    padding: 1rem;
+    flex: content;
+    margin: 1rem;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    flex-direction: column;
+    min-width: 10rem;
+    border-bottom-style: solid;
+    border-bottom-color: hsl(228, 5.9%, 49.6%);
+    border-bottom-width: 1px;
+    padding-bottom: 0.5rem;
+}
+
+.todo-item {
+    display: flex;
+    justify-items: left;
+    justify-content: space-around;
+    flex-direction: row;
+    padding: 0.5rem
+}
+
+.item-name {
+    min-width: 20rem
 }

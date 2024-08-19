@@ -1,28 +1,124 @@
 <head>
-    <link rel="stylesheet" href="/Todo/static/styles.css"></link>
+    <!-- See readme for explanation for internal stylesheets -->
+    <style>
+        body {
+            background-color: #16213d;
+        }
+
+        a {
+            color: hsl(221.9, 53.5%, 80.6%);
+            font-weight: bold;
+        }
+
+        main {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+
+            color: hsl(221.9, 53.5%, 80.6%);
+        }
+
+        .contents {
+            border-radius: 10px;
+            background-color: #1e293b;
+            border-color: #5d6c84;
+            border-style: solid;
+            border-width: 1px;
+
+            display: flex;
+            flex-flow: wrap;
+            margin: 1rem;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 90%;
+            min-width: 600px;
+        }
+
+        .header {
+            color: hsl(221.9, 53.5%, 80.6%);
+            border-bottom-style: solid;
+            border-bottom-color: hsl(228, 5.9%, 49.6%);
+            border-bottom-width: 1px;
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: center;
+            font-weight: bold;
+            font-size: larger;
+
+            h2 {
+                font-weight: bold;
+                font-size: larger;             
+            }
+        }
+
+        .add-container {
+            flex: content;
+            flex-flow: row;
+            flex-wrap: nowrap;
+            display: flex;
+            flex-wrap: wrap;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            justify-content: center;
+        }
+
+        .todo-container {
+            padding: 1rem;
+            flex: content;
+            margin: 1rem;
+            display: flex;
+            flex-flow: wrap;
+            justify-content: center;
+            flex-direction: column;
+            min-width: 10rem;
+            border-bottom-style: solid;
+            border-bottom-color: hsl(228, 5.9%, 49.6%);
+            border-bottom-width: 1px;
+            padding-bottom: 0.5rem;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-items: left;
+            justify-content: space-around;
+            flex-direction: row;
+            padding: 0.5rem
+        }
+
+        .item-name {
+            min-width: 20rem
+        }
+
+    </style>
     <title>Todo Application</title>
 </head>
 <body>
     <main>
-        <div class="header">
-            <h2>List of things to do</h2>
-        </div>
-        <div class="todo-container">
-            {{range .Todos}}
-            <div class="todo-item">
-                <div>
-                    {{.Text}}
-                </div>
-                <div class="editContainer">
-                    <a href="/edit">Edit</a>
-                </div>
-                <div class="deleteContainer">
-                    <a href="/delete">Delete</a>
-                </div>
+        <div class="contents">
+            <div class="header">
+                <h2>
+                    List of things to do
+                </h2>
             </div>
-            {{end}}
-    
-            <a href="/new">Add Todo</a>
+            <div class="todo-container">
+                {{range .Todos}}
+                <div class="todo-item">
+                    <div class="item-name">
+                        {{.Text}}
+                    </div>
+                    <div class="editContainer">
+                        <a href="/edit">Edit</a>
+                    </div>
+                    <div class="deleteContainer">
+                        <a href="/delete">Delete</a>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+            <div class="add-container">
+                <a href="/new">Add Todo</a>
+            </div>
         </div>
     </main>
 </body>
