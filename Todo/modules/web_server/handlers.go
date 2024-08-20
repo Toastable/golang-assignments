@@ -22,7 +22,7 @@ type homepageViewModel struct {
 }
 
 type editPageViewModel struct {
-	todo todo_service.Todo 
+	Todo todo_service.Todo 
 }
 
 type PostRequestBody struct {
@@ -135,12 +135,46 @@ func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
-	viewModel := homepageViewModel{
-		Todos: make([]todo_service.Todo, 0),
+	fmt.Println("STARTED EDIT HANDLER")
+	id := strings.TrimPrefix(req.URL.Path, "/edit/")
+	fmt.Println(id)
+
+	getAddress := fmt.Sprintf("%s/%s", apiBaseAddress, id)
+	fmt.Println("MAKING GET REQUEST")
+	fmt.Println(getAddress)
+	resp, getError := http.Get(getAddress)
+	fmt.Println("ENDED GET REQUEST")
+
+	if getError != nil {
+		fmt.Println(getError)
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
 	}
 
-	editTemplate := template.Must(template.ParseFiles("templates/edit.html"))
+	defer resp.Body.Close()
 
+	responseBody, ioErr := io.ReadAll(resp.Body)
+
+	if ioErr != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	var todo todo_service.Todo
+	jsonErr := json.Unmarshal(responseBody, &todo)
+
+	if jsonErr != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	viewModel := editPageViewModel{
+		Todo: todo,
+	}
+
+	fmt.Println(viewModel)
+
+	editTemplate := template.Must(template.ParseFiles("templates/edit.html"))
 	editTemplate.Execute(wr, viewModel)
 }
 
@@ -153,8 +187,6 @@ func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {
 		defer close(errorChannel)
 
 		id := strings.TrimPrefix(req.URL.Path, "/delete/")
-
-		fmt.Println(id)
 
 		deleteAddress := fmt.Sprintf("%s/%s", apiBaseAddress, id)
 		deleteRequest, deleteErr := http.NewRequest(http.MethodDelete, deleteAddress, nil)

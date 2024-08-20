@@ -12,7 +12,7 @@ func main() {
 	httpServer.HandleFunc("/", web_server.HomepageHandler)
 	httpServer.HandleFunc("/new", web_server.NewTodoHandler)
 	httpServer.HandleFunc("/create", web_server.CreateTodoHandler)
-	httpServer.HandleFunc("/edit", web_server.EditTodoHandler)
+	httpServer.HandleFunc("/edit/{id}", web_server.EditTodoHandler)
 	httpServer.HandleFunc("/update", web_server.EditTodoHandler)
 	httpServer.HandleFunc("/delete/{id}", web_server.DeleteTodoHandler)
 	httpServer.HandleFunc("/server-status", web_server.CheckServerStatusHandler)

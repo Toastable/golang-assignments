@@ -105,11 +105,11 @@
                 <form class="new-todo-form" action="/update" method="post">
                     <div class="new-todo">
                         <label name="todo-text">Todo Description: </label>
-                        <input type="text" name="todo-text" value="{{.Text}}" />
+                        <input type="text" name="todo-text" value="{{.Todo.Text}}" />
                     </div>
                     <div class="new-todo">
                         <label name="todo-status">Todo Status: </label>
-                        <input type="checkbox" name="todo-status" value="{{.Status}}"/>
+                        <input type="checkbox" name="todo-status" value="{{.Todo.Status}}"/>
                     </div>
                     <div class="todo-submit">
                         <input type="submit">
