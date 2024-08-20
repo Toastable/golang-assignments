@@ -1,1 +1,5 @@
-<h1>Hello World from the server status page</h1>
+{{if .Status }}
+    <h1>Yep, definitely alive</h1>
+{{else}}
+    <h1>He's dead Jim</h1>
+{{end}}

@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	aliveAddress = "http://localhost:3000/api/alive"
 	apiBaseAddress = "http://localhost:3000/api/todo"
 	errorAddress = "http://localhost:3001/error"
 	homeAddress = "http://localhost:3001"
@@ -224,12 +225,13 @@ func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func CheckServerStatusHandler(wr http.ResponseWriter, req *http.Request) {
-	viewModel := statusPageViewModel {
-		Status: false,
+	resp, _ := http.Get(aliveAddress)
+
+	viewModel := statusPageViewModel{
+		Status: resp.StatusCode == http.StatusOK,
 	}
 
-	statusTemplate := template.Must(template.ParseFiles("templates/status.html"))
-
+	statusTemplate := template.Must(template.ParseFiles("templates/server-status.html"))
 	statusTemplate.Execute(wr, viewModel)
 }
 

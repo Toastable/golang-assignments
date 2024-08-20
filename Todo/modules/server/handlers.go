@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 	"todo_inmemory_service"
 )
 
-const defaultTimeout = 90
+const defaultTimeout = time.Millisecond * 90
 
 type PostRequestBody struct {
 	Text   string
@@ -20,6 +21,10 @@ type PatchRequestBody struct {
 	ID     string
 	Text   string
 	Status bool
+}
+
+func AliveHandler(wr http.ResponseWriter, req *http.Request) {
+	wr.WriteHeader(http.StatusOK)
 }
 
 func DeleteHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc {
