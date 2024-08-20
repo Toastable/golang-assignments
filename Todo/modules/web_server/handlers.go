@@ -21,6 +21,10 @@ type homepageViewModel struct {
 	Todos []todo_service.Todo
 }
 
+type editPageViewModel struct {
+	todo todo_service.Todo 
+}
+
 type PostRequestBody struct {
 	Text   string 
 	Status bool

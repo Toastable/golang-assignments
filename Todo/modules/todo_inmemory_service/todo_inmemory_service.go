@@ -39,6 +39,19 @@ func (t *TodoService) Create(text string, status bool) (string, error) {
 	return newTodo.ID, nil
 }
 
+func (t *TodoService) Get(id string) (todo_service.Todo, error) {
+	t.mutex.Lock()
+	index, err := t.findIndexByID(id)
+
+	defer t.mutex.Unlock()
+
+	if err != nil {
+		return todo_service.Todo{}, err
+	}
+
+	return t.todos[index], nil
+}
+
 func (t *TodoService) GetAll() ([]todo_service.Todo, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()

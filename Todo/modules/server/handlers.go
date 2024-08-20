@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"todo_inmemory_service"
 )
 
@@ -84,6 +85,36 @@ func CreateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 		fmt.Println(requestBody)
 
 		go createTodo(requestBody, service, &okChannel, &errorChannel)
+
+		var encodedJson []byte
+		var errorResponseCode int
+
+		select {
+		case <-context.Done():
+			cancelContext()
+			wr.WriteHeader(http.StatusRequestTimeout)
+		case encodedJson = <-okChannel:
+			wr.WriteHeader(http.StatusOK)
+			wr.Header().Set("Content-Type", "application/json")
+			wr.Write(encodedJson)
+		case errorResponseCode = <-errorChannel:
+			wr.WriteHeader(errorResponseCode)
+		}
+	}
+}
+
+func GetHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc {
+	return func(wr http.ResponseWriter, req *http.Request) {
+
+		context, cancelContext := context.WithTimeout(req.Context(), defaultTimeout)
+		defer cancelContext()
+
+		okChannel := make(chan []byte)
+		errorChannel := make(chan int)
+
+		id := strings.TrimPrefix(req.URL.Path, "/api/todo/")
+
+		go retrieveTodoById(id, service, &okChannel, &errorChannel)
 
 		var encodedJson []byte
 		var errorResponseCode int
@@ -196,6 +227,26 @@ func createTodo(body PostRequestBody, service *todo_inmemory_service.TodoService
 	}
 
 	*okChan <- encodedResponse
+}
+
+func retrieveTodoById(id string, service *todo_inmemory_service.TodoService, okChan *chan []byte, errorChan *chan int) {
+	todo, err := service.Get(id)
+
+	defer close(*okChan)
+	defer close(*errorChan)
+
+	if err != nil {
+		*errorChan <- http.StatusInternalServerError
+		return
+	}
+	encodedTodo, err := json.Marshal(todo)
+
+	if err != nil {
+		*errorChan <- http.StatusInternalServerError
+		return
+	}
+
+	*okChan <- encodedTodo
 }
 
 func retrieveTodos(service *todo_inmemory_service.TodoService, okChan *chan []byte, errorChan *chan int) {
