@@ -41,51 +41,34 @@ func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 		Todos: make([]todo_service.Todo, 0),
 	}
 
-	okChannel := make(chan []todo_service.Todo)
-	errorChannel := make(chan int)
+	resp, getError := http.Get(apiBaseAddress)
 
-	go func() {
-		defer close(okChannel)
-		defer close(errorChannel)
-
-		resp, getError := http.Get(apiBaseAddress)
-
-		if getError != nil {
-			fmt.Println(getError)
-			errorChannel <- http.StatusInternalServerError
-			return
-		}
-
-		defer resp.Body.Close()
-
-		responseBody, ioErr := io.ReadAll(resp.Body)
-
-		if ioErr != nil {
-			errorChannel <- http.StatusInternalServerError
-			return
-		}
-
-		todos := make([]todo_service.Todo, 0)
-		jsonErr := json.Unmarshal(responseBody, &todos)
-
-		if jsonErr != nil {
-			errorChannel <- http.StatusInternalServerError
-			return
-		}
-
-		okChannel <- todos
-	}()
-	
-	var todos []todo_service.Todo
-
-	select {
-	case todos = <-okChannel:
-		viewModel.Todos = todos
-		homepageTemplate := template.Must(template.ParseFiles("templates/homepage.html"))
-		homepageTemplate.Execute(wr, viewModel)
-	case <-errorChannel:
+	if getError != nil {
+		fmt.Println(getError)
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
 	}
+
+	defer resp.Body.Close()
+
+	responseBody, ioErr := io.ReadAll(resp.Body)
+
+	if ioErr != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	todos := make([]todo_service.Todo, 0)
+	jsonErr := json.Unmarshal(responseBody, &todos)
+
+	if jsonErr != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	viewModel.Todos = todos
+	homepageTemplate := template.Must(template.ParseFiles("templates/homepage.html"))
+	homepageTemplate.Execute(wr, viewModel)
 }
 
 func NewTodoHandler(wr http.ResponseWriter, req *http.Request) {
