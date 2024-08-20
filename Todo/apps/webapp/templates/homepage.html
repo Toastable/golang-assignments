@@ -52,6 +52,10 @@
             }
         }
 
+        .statusContainer {
+            min-width: 4rem
+        }
+
         .add-container {
             flex: content;
             flex-flow: row;
@@ -106,7 +110,11 @@
                         {{.Text}}
                     </div>
                     <div class="statusContainer">
-                        {{.Status}}
+                        {{if .Status}}
+                            Done
+                        {{else}}
+                            Not Done
+                        {{end}}
                     </div>
                     <div class="editContainer">
                         <a href="/edit">Edit</a>
