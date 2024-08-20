@@ -30,6 +30,12 @@ type PostRequestBody struct {
 	Status bool
 }
 
+type PatchRequestBody struct {
+	ID     string
+	Text   string
+	Status bool
+}
+
 func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 	viewModel := homepageViewModel{
 		Todos: make([]todo_service.Todo, 0),
@@ -168,6 +174,37 @@ func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
 
 	editTemplate := template.Must(template.ParseFiles("templates/edit.html"))
 	editTemplate.Execute(wr, viewModel)
+}
+
+func UpdateHandler(wr http.ResponseWriter, req *http.Request) {
+	patchData := PatchRequestBody {
+		ID:  req.FormValue("todo-id"),
+		Text: req.FormValue("todo-text"),
+		Status: req.FormValue("todo-status") == "on",
+	}
+
+	jsonData, err := json.Marshal(patchData)
+	if err != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	patchRequest, patchErr := http.NewRequest(http.MethodPatch, apiBaseAddress, bytes.NewBuffer(jsonData))
+
+	if patchErr != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	client := &http.Client{}
+	_, patchRequestError := client.Do(patchRequest)
+
+	if patchRequestError != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	http.Redirect(wr, req, homeAddress, http.StatusFound)
 }
 
 func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {

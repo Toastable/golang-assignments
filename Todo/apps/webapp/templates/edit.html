@@ -109,8 +109,9 @@
                     </div>
                     <div class="new-todo">
                         <label name="todo-status">Todo Status: </label>
-                        <input type="checkbox" name="todo-status" value="{{.Todo.Status}}" {{if .Todo.Status}} checked {{end}}/>
+                        <input type="checkbox" name="todo-status" {{if .Todo.Status}} checked {{end}}/>
                     </div>
+                    <input hidden name="todo-id" value="{{.Todo.ID}}">
                     <div class="todo-submit">
                         <input type="submit">
                     </div>
