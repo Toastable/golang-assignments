@@ -79,48 +79,30 @@ func NewTodoHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
-
-	okChannel := make(chan string)
-	errorChannel := make(chan int)
-
-	go func() {
-		defer close(okChannel)
-		defer close(errorChannel)
-
-		postData := PostRequestBody {
-			Text: req.FormValue("todo-text"),
-			Status: false,
-		}
-
-		jsonData, err := json.Marshal(postData)
-		if err != nil {
-			fmt.Println(err)
-			errorChannel <- http.StatusInternalServerError
-			return
-		}
-
-		resp, getError := http.Post(apiBaseAddress, 
-			"application/json",
-			bytes.NewBuffer(jsonData),
-		)
-
-		if getError != nil {
-			fmt.Println(getError)
-			errorChannel <- http.StatusInternalServerError
-			return
-		}
-
-		defer resp.Body.Close()
-
-		okChannel <- ""
-	}()
-
-	select {
-	case <-okChannel:
-		http.Redirect(wr, req, homeAddress, http.StatusFound)
-	case <-errorChannel:
-		http.Redirect(wr, req, errorAddress, http.StatusFound)
+	postData := PostRequestBody {
+		Text: req.FormValue("todo-text"),
+		Status: false,
 	}
+
+	jsonData, err := json.Marshal(postData)
+	if err != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	resp, getError := http.Post(apiBaseAddress, 
+		"application/json",
+		bytes.NewBuffer(jsonData),
+	)
+
+	if getError != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	defer resp.Body.Close()
+
+	http.Redirect(wr, req, homeAddress, http.StatusFound)
 }
 
 func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
