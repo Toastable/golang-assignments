@@ -72,7 +72,6 @@ func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func NewTodoHandler(wr http.ResponseWriter, req *http.Request) {
-
 	editTemplate := template.Must(template.ParseFiles("templates/new.html"))
 
 	editTemplate.Execute(wr, nil)
@@ -173,35 +172,26 @@ func UpdateHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {
-	okChannel := make(chan string)
-	errorChannel := make(chan int)
 
-	go func() {
-		defer close(okChannel)
-		defer close(errorChannel)
+	id := strings.TrimPrefix(req.URL.Path, "/delete/")
 
-		id := strings.TrimPrefix(req.URL.Path, "/delete/")
+	deleteAddress := fmt.Sprintf("%s/%s", apiBaseAddress, id)
+	deleteRequest, deleteErr := http.NewRequest(http.MethodDelete, deleteAddress, nil)
 
-		deleteAddress := fmt.Sprintf("%s/%s", apiBaseAddress, id)
-		deleteRequest, deleteErr := http.NewRequest(http.MethodDelete, deleteAddress, nil)
-
-		client := &http.Client{}
-		_, deleteRequestError := client.Do(deleteRequest)
-
-		if deleteRequestError != nil {
-			fmt.Println(deleteErr)
-			errorChannel <- http.StatusInternalServerError
-			return
-		}
-		okChannel <- ""
-	}()
-
-	select {
-	case <-okChannel:
-		http.Redirect(wr, req, homeAddress, http.StatusFound)
-	case <-errorChannel:
+	if deleteErr != nil {
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
 	}
+
+	client := &http.Client{}
+	_, deleteRequestError := client.Do(deleteRequest)
+
+	if deleteRequestError != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	http.Redirect(wr, req, homeAddress, http.StatusFound)
 }
 
 func CheckServerStatusHandler(wr http.ResponseWriter, req *http.Request) {
