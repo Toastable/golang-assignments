@@ -135,18 +135,12 @@ func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
-	fmt.Println("STARTED EDIT HANDLER")
 	id := strings.TrimPrefix(req.URL.Path, "/edit/")
-	fmt.Println(id)
 
 	getAddress := fmt.Sprintf("%s/%s", apiBaseAddress, id)
-	fmt.Println("MAKING GET REQUEST")
-	fmt.Println(getAddress)
 	resp, getError := http.Get(getAddress)
-	fmt.Println("ENDED GET REQUEST")
 
 	if getError != nil {
-		fmt.Println(getError)
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
@@ -171,8 +165,6 @@ func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
 	viewModel := editPageViewModel{
 		Todo: todo,
 	}
-
-	fmt.Println(viewModel)
 
 	editTemplate := template.Must(template.ParseFiles("templates/edit.html"))
 	editTemplate.Execute(wr, viewModel)
