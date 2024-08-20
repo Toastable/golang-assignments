@@ -25,6 +25,10 @@ type editPageViewModel struct {
 	Todo todo_service.Todo 
 }
 
+type statusPageViewModel struct {
+	Status bool
+}
+
 type PostRequestBody struct {
 	Text   string 
 	Status bool
@@ -45,6 +49,11 @@ func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 
 	if getError != nil {
 		fmt.Println(getError)
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	if resp.StatusCode != http.StatusOK {
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
@@ -95,6 +104,11 @@ func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
 	)
 
 	if getError != nil {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+	
+	if resp.StatusCode != http.StatusOK {
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
@@ -161,12 +175,19 @@ func UpdateHandler(wr http.ResponseWriter, req *http.Request) {
 	}
 
 	client := &http.Client{}
-	_, patchRequestError := client.Do(patchRequest)
+	resp, patchRequestError := client.Do(patchRequest)
+
+	if resp.StatusCode != http.StatusOK {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
 
 	if patchRequestError != nil {
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
+
+	defer resp.Body.Close()
 
 	http.Redirect(wr, req, homeAddress, http.StatusFound)
 }
@@ -182,21 +203,29 @@ func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
+	
 
 	client := &http.Client{}
-	_, deleteRequestError := client.Do(deleteRequest)
+	resp, deleteRequestError := client.Do(deleteRequest)
 
 	if deleteRequestError != nil {
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
 
+	if resp.StatusCode != http.StatusOK {
+		http.Redirect(wr, req, errorAddress, http.StatusFound)
+		return
+	}
+
+	defer resp.Body.Close()
+
 	http.Redirect(wr, req, homeAddress, http.StatusFound)
 }
 
 func CheckServerStatusHandler(wr http.ResponseWriter, req *http.Request) {
-	viewModel := homepageViewModel{
-		Todos: make([]todo_service.Todo, 0),
+	viewModel := statusPageViewModel {
+		Status: false,
 	}
 
 	statusTemplate := template.Must(template.ParseFiles("templates/status.html"))
@@ -205,11 +234,7 @@ func CheckServerStatusHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func ErrorHandler(wr http.ResponseWriter, req *http.Request) {
-	viewModel := homepageViewModel{
-		Todos: make([]todo_service.Todo, 0),
-	}
-
 	editTemplate := template.Must(template.ParseFiles("templates/error.html"))
 
-	editTemplate.Execute(wr, viewModel)
+	editTemplate.Execute(wr, nil)
 }
