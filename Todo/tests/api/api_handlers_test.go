@@ -76,20 +76,29 @@ func TestDeleteHandler(t *testing.T) {
 		deleteAddress := fmt.Sprintf("%s/%s", apiBaseAddress, "c3e6f7d0-8b5a-4e8d-9c5b-3a2b1e0f4a7d")
 		deleteRequest, _ := http.NewRequest(http.MethodDelete, deleteAddress, nil)
 
-		fmt.Println(deleteAddress)
+		client := &http.Client{}
+		resp, _ := client.Do(deleteRequest)
+
+		assertAreEqual(t, resp.StatusCode, http.StatusOK)
+	})
+
+	t.Run("returns 404 response with an id that does not exist", func(t *testing.T) {
+
+		deleteAddress := fmt.Sprintf("%s/%s", apiBaseAddress, "Some Fake ID")
+		deleteRequest, _ := http.NewRequest(http.MethodDelete, deleteAddress, nil)
 
 		client := &http.Client{}
 		resp, _ := client.Do(deleteRequest)
 
-		fmt.Println(resp)
-
-		assertAreEqual(t, resp.StatusCode, http.StatusOK)
+		assertAreEqual(t, resp.StatusCode, http.StatusNotFound)
 	})
 }
 
 func TestGetHandler(t *testing.T) {
 	t.Run("returns 200 response", func(t *testing.T) {
-		resp, _ := http.Get(apiBaseAddress)
+		address := fmt.Sprintf("%s/%s", apiBaseAddress, "d4c3b2a1-0e1f-2d3c-4b5a-6f7e8d9c0a")
+		resp, _ := http.Get(address)
+		fmt.Println(resp.StatusCode)
 
 		assertAreEqual(t, resp.StatusCode, http.StatusOK)
 	})
