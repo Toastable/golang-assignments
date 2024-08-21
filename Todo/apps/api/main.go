@@ -3,7 +3,6 @@ package main
 import (
 	"common"
 	"net/http"
-	"server"
 	"todo_inmemory_service"
 )
 
@@ -22,10 +21,10 @@ func main() {
 }
 
 func setupRouting(httpServer *http.ServeMux, service *todo_inmemory_service.TodoService) {
-	httpServer.Handle("GET /api/todo", http.HandlerFunc(server.GetAllHandler(service)))
-	httpServer.Handle("GET /api/todo/{id}", http.HandlerFunc(server.GetHandler(service)))
-	httpServer.Handle("POST /api/todo", http.HandlerFunc(server.CreateHandler(service)))
-	httpServer.Handle("PATCH /api/todo", http.HandlerFunc(server.UpdateHandler(service)))
-	httpServer.Handle("DELETE /api/todo/{id}", http.HandlerFunc(server.DeleteHandler(service)))
-	httpServer.Handle("GET /api/alive", http.HandlerFunc(server.AliveHandler))
+	httpServer.Handle("GET /api/todo", http.HandlerFunc(GetAllHandler(service)))
+	httpServer.Handle("GET /api/todo/{id}", http.HandlerFunc(GetHandler(service)))
+	httpServer.Handle("POST /api/todo", http.HandlerFunc(CreateHandler(service)))
+	httpServer.Handle("PATCH /api/todo", http.HandlerFunc(UpdateHandler(service)))
+	httpServer.Handle("DELETE /api/todo/{id}", http.HandlerFunc(DeleteHandler(service)))
+	httpServer.Handle("GET /api/alive", http.HandlerFunc(AliveHandler))
 }
