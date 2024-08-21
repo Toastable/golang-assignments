@@ -75,6 +75,8 @@ func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	fmt.Println(todos)
+
 	viewModel.Todos = todos
 	homepageTemplate := template.Must(template.ParseFiles("templates/homepage.html"))
 	homepageTemplate.Execute(wr, viewModel)
@@ -195,25 +197,28 @@ func UpdateHandler(wr http.ResponseWriter, req *http.Request) {
 func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {
 
 	id := strings.TrimPrefix(req.URL.Path, "/delete/")
-
+	fmt.Println(id)
 	deleteAddress := fmt.Sprintf("%s/%s", apiBaseAddress, id)
+	fmt.Println(deleteAddress)
 	deleteRequest, deleteErr := http.NewRequest(http.MethodDelete, deleteAddress, nil)
 
 	if deleteErr != nil {
+		fmt.Println(deleteErr)
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
-	}
-	
+	}	
 
 	client := &http.Client{}
 	resp, deleteRequestError := client.Do(deleteRequest)
 
 	if deleteRequestError != nil {
+		fmt.Println(deleteRequestError)
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		fmt.Println(resp.StatusCode)
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}

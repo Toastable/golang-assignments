@@ -16,7 +16,7 @@ func TestCreate(t *testing.T) {
 			Text:   "This is a test",
 		})
 
-		_, err := service.Create("This is also a test", true)
+		_, err := service.Create("This is also a test", true, "")
 
 		if err != nil {
 			t.Fatalf("Expected no errors to occur but one happened anyway: %v", err)
@@ -42,8 +42,8 @@ func TestDelete(t *testing.T) {
 			Text:   "Learn GoLang",
 		})
 
-		service.Create("Learn GoLang", false)
-		service.Create("This should be removed", true)
+		service.Create("Learn GoLang", false, "")
+		service.Create("This should be removed", true, "")
 
 		todos, _ := service.GetAll()
 		err := service.Delete(todos[1].ID)
@@ -71,8 +71,8 @@ func TestGetAll(t *testing.T) {
 			Status: true,
 			Text:   "Pass this unit test",
 		})
-		service.Create("Learn GoLang", false)
-		service.Create("Pass this unit test", true)
+		service.Create("Learn GoLang", false, "")
+		service.Create("Pass this unit test", true, "")
 
 		got, _ := service.GetAll()
 
@@ -91,7 +91,7 @@ func TestGetAll(t *testing.T) {
 func TestUpdate(t *testing.T) {
 	t.Run("correctly updates the status of a todo", func(t *testing.T) {
 		service := todo_inmemory_service.TodoService{}
-		service.Create("This is a test", true)
+		service.Create("This is a test", true, "")
 
 		todos, _ := service.GetAll()
 

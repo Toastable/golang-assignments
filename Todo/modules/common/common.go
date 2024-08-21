@@ -13,7 +13,7 @@ func PopulateInMemoryTodos(service *todo_inmemory_service.TodoService, todoFileP
 	todos := readJsonFileFromDisk(todoFilePath)
 
 	for _, todo := range todos {
-		service.Create(todo.Text, todo.Status)
+		service.Create(todo.Text, todo.Status,todo.ID)
 	}
 
 	return todos

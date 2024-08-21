@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -87,7 +86,6 @@ func CreateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 		okChannel := make(chan []byte)
 		errorChannel := make(chan int)
 		requestBody := unmarshalRequestBody[PostRequestBody](wr, req)
-		fmt.Println(requestBody)
 
 		go createTodo(requestBody, service, &okChannel, &errorChannel)
 
@@ -218,7 +216,7 @@ func createTodo(body PostRequestBody, service *todo_inmemory_service.TodoService
 		return
 	}
 
-	id, err := service.Create(body.Text, body.Status)
+	id, err := service.Create(body.Text, body.Status, "")
 
 	if err != nil {
 		*errorChan <- http.StatusInternalServerError

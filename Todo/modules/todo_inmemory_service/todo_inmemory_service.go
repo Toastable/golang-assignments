@@ -18,18 +18,22 @@ type TodoService struct {
 	mutex sync.Mutex
 }
 
-func (t *TodoService) Create(text string, status bool) (string, error) {
+func (t *TodoService) Create(text string, status bool, id string) (string, error) {
 	t.mutex.Lock()
-	id, err := uuid.NewV7()
-
 	defer t.mutex.Unlock()
 
-	if err != nil {
-		return "", errGenerateUuidError
+	if id == "" {
+		newId, err := uuid.NewV7()
+
+		if err != nil {
+			return "", errGenerateUuidError
+		}
+
+		id = newId.String()
 	}
 
 	newTodo := todo_service.Todo{
-		ID:     id.String(),
+		ID:     id,
 		Status: status,
 		Text:   text,
 	}
