@@ -1,6 +1,7 @@
 package todo_inmemory_service_test
 
 import (
+	"common"
 	"testing"
 	"todo_inmemory_service"
 	"todo_service"
@@ -105,6 +106,23 @@ func TestUpdate(t *testing.T) {
 		sut := got[0]
 		assertAreEqual(t, sut.Status, false)
 	})
+}
+
+func BenchmarkCreate(b *testing.B) {
+	service := todo_inmemory_service.TodoService{}
+
+	for i := 0; i < b.N; i++ {
+		service.Create("This is a benchmark testing result", true, "")
+	}
+}
+
+func BenchmarkGet(b *testing.B) {
+	service := todo_inmemory_service.TodoService{}
+	common.PopulateInMemoryTodos(&service, "todos.json")
+
+	for i := 0; i < b.N; i++ {
+		service.GetAll()
+	}
 }
 
 func assertAreEqual[T comparable](t testing.TB, got, want T) {
