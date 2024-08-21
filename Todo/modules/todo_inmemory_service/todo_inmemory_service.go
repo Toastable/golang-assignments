@@ -2,7 +2,7 @@ package todo_inmemory_service
 
 import (
 	"errors"
-	"sort"
+	"fmt"
 	"sync"
 	"todo_service"
 
@@ -45,7 +45,7 @@ func (t *TodoService) Create(text string, status bool, id string) (string, error
 func (t *TodoService) Get(id string) (todo_service.Todo, error) {
 	t.mutex.Lock()
 	index, err := t.findIndexByID(id)
-
+	fmt.Println(index)
 	defer t.mutex.Unlock()
 
 	if err != nil {
@@ -95,15 +95,15 @@ func (t *TodoService) Delete(id string) error {
 }
 
 func (t *TodoService) findIndexByID(id string) (int, error) {
-	index, found := sort.Find(len(t.todos), func(i int) int {
+	index := -1
+
+	for i := 0; i < len(t.todos); i++ {
 		if id == t.todos[i].ID {
-			return 0
+			index = i
 		}
+	}
 
-		return -1
-	})
-
-	if !found {
+	if index == -1 {
 		return -1, errGetTodoNotFoundError
 	}
 
