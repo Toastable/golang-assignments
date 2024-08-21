@@ -49,7 +49,6 @@ func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 	resp, getError := http.Get(apiBaseAddress)
 
 	if getError != nil {
-		fmt.Println(getError)
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
