@@ -34,7 +34,7 @@ func DeleteHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 		responseChannel := make(chan int)
 
 		id := req.PathValue("id")
-		
+
 		var responseCode int
 
 		go deleteTodo(id, service, &responseChannel)
@@ -108,7 +108,6 @@ func CreateHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 
 func GetHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc {
 	return func(wr http.ResponseWriter, req *http.Request) {
-
 		context, cancelContext := context.WithTimeout(req.Context(), defaultTimeout)
 		defer cancelContext()
 
@@ -116,7 +115,6 @@ func GetHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc {
 		errorChannel := make(chan int)
 
 		id := strings.TrimPrefix(req.URL.Path, "/api/todo/")
-
 		go retrieveTodoById(id, service, &okChannel, &errorChannel)
 
 		var encodedJson []byte
