@@ -34,7 +34,7 @@ func DeleteHandler(service *todo_inmemory_service.TodoService) http.HandlerFunc 
 		responseChannel := make(chan int)
 
 		id := req.PathValue("id")
-
+		
 		var responseCode int
 
 		go deleteTodo(id, service, &responseChannel)

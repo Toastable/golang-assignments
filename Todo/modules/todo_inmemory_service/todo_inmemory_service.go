@@ -3,7 +3,6 @@ package todo_inmemory_service
 import (
 	"errors"
 	"sort"
-	"strings"
 	"sync"
 	"todo_service"
 
@@ -96,9 +95,12 @@ func (t *TodoService) Delete(id string) error {
 }
 
 func (t *TodoService) findIndexByID(id string) (int, error) {
-
 	index, found := sort.Find(len(t.todos), func(i int) int {
-		return strings.Compare(id, t.todos[i].ID)
+		if id == t.todos[i].ID {
+			return 0
+		}
+
+		return -1
 	})
 
 	if !found {
