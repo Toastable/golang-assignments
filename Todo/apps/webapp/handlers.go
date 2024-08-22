@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	aliveAddress = "http://localhost:3000/api/alive"
+	aliveAddress   = "http://localhost:3000/api/alive"
 	apiBaseAddress = "http://localhost:3000/api/todo"
-	errorAddress = "http://localhost:3001/error"
-	homeAddress = "http://localhost:3001"
+	errorAddress   = "http://localhost:3001/error"
+	homeAddress    = "http://localhost:3001"
 )
 
 type homepageViewModel struct {
@@ -23,7 +23,7 @@ type homepageViewModel struct {
 }
 
 type editPageViewModel struct {
-	Todo todo_service.Todo 
+	Todo todo_service.Todo
 }
 
 type statusPageViewModel struct {
@@ -31,7 +31,7 @@ type statusPageViewModel struct {
 }
 
 type PostRequestBody struct {
-	Text   string 
+	Text   string
 	Status bool
 }
 
@@ -75,8 +75,6 @@ func HomepageHandler(wr http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	fmt.Println(todos)
-
 	viewModel.Todos = todos
 	homepageTemplate := template.Must(template.ParseFiles("templates/homepage.html"))
 	homepageTemplate.Execute(wr, viewModel)
@@ -89,8 +87,8 @@ func NewTodoHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
-	postData := PostRequestBody {
-		Text: req.FormValue("todo-text"),
+	postData := PostRequestBody{
+		Text:   req.FormValue("todo-text"),
 		Status: false,
 	}
 
@@ -100,7 +98,7 @@ func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	resp, getError := http.Post(apiBaseAddress, 
+	resp, getError := http.Post(apiBaseAddress,
 		"application/json",
 		bytes.NewBuffer(jsonData),
 	)
@@ -109,7 +107,7 @@ func CreateTodoHandler(wr http.ResponseWriter, req *http.Request) {
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
 	}
-	
+
 	if resp.StatusCode != http.StatusOK {
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
@@ -157,9 +155,9 @@ func EditTodoHandler(wr http.ResponseWriter, req *http.Request) {
 }
 
 func UpdateHandler(wr http.ResponseWriter, req *http.Request) {
-	patchData := PatchRequestBody {
-		ID:  req.FormValue("todo-id"),
-		Text: req.FormValue("todo-text"),
+	patchData := PatchRequestBody{
+		ID:     req.FormValue("todo-id"),
+		Text:   req.FormValue("todo-text"),
 		Status: req.FormValue("todo-status") == "on",
 	}
 
@@ -206,7 +204,7 @@ func DeleteTodoHandler(wr http.ResponseWriter, req *http.Request) {
 		fmt.Println(deleteErr)
 		http.Redirect(wr, req, errorAddress, http.StatusFound)
 		return
-	}	
+	}
 
 	client := &http.Client{}
 	resp, deleteRequestError := client.Do(deleteRequest)
